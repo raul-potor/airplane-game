@@ -11,7 +11,7 @@ import { millisToMinutesAndSeconds } from "utils/date";
 import { EndGameModal } from ".";
 
 interface GameStatsInterface {
-  date?: string;
+  date: string;
   startTime: number;
   hits: number;
   duration?: string;

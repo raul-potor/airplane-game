@@ -30,7 +30,7 @@ const Cell = ({ position }) => {
       cursor="pointer"
       onClick={(!isHit && hitCell) || null}
     >
-      {position === airplanePosition ? "1" : "0"}
+      {isAirplaneCell ? "1" : "0"}
     </Center>
   );
 };
