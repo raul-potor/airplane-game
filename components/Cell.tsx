@@ -4,19 +4,14 @@ import { useState } from "react";
 import { useGame } from "./GameProvider";
 
 const Cell = ({ position }) => {
-  const { airplanePosition, setGameStats, endGame } = useGame();
+  const { airplanesPosition, hitCell } = useGame();
   const [isHit, setIsHit] = useState(false);
-  const isAirplaneCell = position === airplanePosition;
-  const hitCell = () => {
+  const isAirplaneCell = airplanesPosition.find(
+    (airplanePosition) => airplanePosition === position
+  );
+  const strikeCell = () => {
     setIsHit(true);
-    if (isAirplaneCell) {
-      endGame();
-      return;
-    }
-    setGameStats((gameStats) => ({
-      ...gameStats,
-      hits: gameStats.hits + 1,
-    }));
+    hitCell(position);
   };
   return (
     <Center
@@ -25,13 +20,11 @@ const Cell = ({ position }) => {
       whileTap={{ scale: 0.9 }}
       bgColor={isHit ? (isAirplaneCell ? "green.500" : "red.500") : "cyan.500"}
       borderRadius={5}
-      w={10}
-      h={10}
+      w={{ base: 8, md: 10 }}
+      h={{ base: 8, md: 10 }}
       cursor="pointer"
-      onClick={(!isHit && hitCell) || null}
-    >
-      {isAirplaneCell ? "1" : "0"}
-    </Center>
+      onClick={(!isHit && strikeCell) || null}
+    />
   );
 };
 

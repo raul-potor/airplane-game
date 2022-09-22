@@ -1,12 +1,23 @@
 import { extendTheme } from "@chakra-ui/react";
 
-// 2. Extend the theme to include custom colors, fonts, etc
-const colors = {
-  brand: {
-    900: "#1a365d",
-    800: "#153e75",
-    700: "#2a69ac",
-  },
+const breakpoints = {
+  sm: "320px",
+  md: "768px",
+  lg: "960px",
+  xl: "1200px",
+  "2xl": "1536px",
 };
 
-export const theme = extendTheme({ colors });
+const colors = {
+  electricViolet: "#9106DB",
+  purple: "#6602CE",
+};
+
+export const theme = extendTheme({
+  breakpoints,
+  colors,
+  fonts: {
+    heading: `Poppins`,
+    body: `Poppins`,
+  },
+});

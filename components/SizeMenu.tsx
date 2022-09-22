@@ -3,14 +3,19 @@ import {
   Divider,
   Flex,
   Heading,
+  NumberInput,
+  NumberInputField,
   Radio,
   RadioGroup,
   Stack,
+  Text,
   useToast,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
+import { useGame } from "./GameProvider";
 
 const SizeMenu = ({ onSizeConfirmed }) => {
+  const { numberOfAirplanes, setNumberOfAirplanes } = useGame();
   const [size, setSize] = useState(null);
   const toast = useToast();
   const checkBoardSize = () => {
@@ -48,6 +53,17 @@ const SizeMenu = ({ onSizeConfirmed }) => {
           <Radio value={10}>10x10</Radio>
         </Stack>
       </RadioGroup>
+      <NumberInput
+        value={numberOfAirplanes}
+        defaultValue={1}
+        min={1}
+        onChange={(val) => {
+          setNumberOfAirplanes(+val);
+        }}
+      >
+        <Text mb="8px">Number of airplanes</Text>
+        <NumberInputField />
+      </NumberInput>
       <Button colorScheme="linkedin" onClick={checkBoardSize}>
         Start Game
       </Button>

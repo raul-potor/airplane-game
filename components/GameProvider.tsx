@@ -15,25 +15,30 @@ interface GameStatsInterface {
   startTime: number;
   hits: number;
   duration?: string;
+  noHitAirplanes: number;
 }
 
 interface GameContextInterface {
-  airplanePosition: string;
-  setAirplanePosition: Dispatch<SetStateAction<string>>;
+  airplanesPosition: string[];
+  setAirplanesPosition: Dispatch<SetStateAction<string[]>>;
   gameStats: GameStatsInterface;
   setGameStats: Dispatch<SetStateAction<GameStatsInterface>>;
   startGameSession: () => void;
   endGame: () => void;
   restartGame: () => void;
   historicGames: GameStatsInterface[];
+  setNumberOfAirplanes: Dispatch<SetStateAction<number>>;
+  numberOfAirplanes: number;
+  hitCell: (string) => void;
 }
 
 const GameContext = createContext<GameContextInterface>(null);
 export const useGame = () => useContext(GameContext);
 const GameProvider = ({ children }) => {
-  const [airplanePosition, setAirplanePosition] = useState<string>(null);
+  const [airplanesPosition, setAirplanesPosition] = useState<string[]>([]);
   const [gameStats, setGameStats] = useState<GameStatsInterface>(null);
   const [historicGames, setHistoricGames] = useState<GameStatsInterface[]>([]);
+  const [numberOfAirplanes, setNumberOfAirplanes] = useState(1);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const startGameSession = () => {
@@ -41,13 +46,23 @@ const GameProvider = ({ children }) => {
       date: new Date().toLocaleString(),
       startTime: Date.now(),
       hits: 0,
+      noHitAirplanes: 0,
     });
+  };
+
+  const hitCell = (cellPoistion) => {
+    setGameStats((gameStats) => ({
+      ...gameStats,
+      noHitAirplanes: airplanesPosition.includes(cellPoistion)
+        ? gameStats.noHitAirplanes + 1
+        : gameStats.noHitAirplanes,
+      hits: gameStats.hits + 1,
+    }));
   };
 
   const endGame = () => {
     const game = {
       ...gameStats,
-      hits: gameStats.hits + 1,
       duration: millisToMinutesAndSeconds(Date.now() - gameStats.startTime),
     };
     setGameStats(game);
@@ -78,15 +93,24 @@ const GameProvider = ({ children }) => {
     }
   }, [gameStats]);
 
+  useEffect(() => {
+    if (gameStats?.noHitAirplanes === numberOfAirplanes) {
+      endGame();
+    }
+  }, [gameStats?.noHitAirplanes]);
+
   const positionProviderData: GameContextInterface = {
-    airplanePosition,
-    setAirplanePosition,
+    airplanesPosition,
+    setAirplanesPosition,
     gameStats,
     setGameStats,
     startGameSession,
     endGame,
     restartGame,
     historicGames,
+    setNumberOfAirplanes,
+    numberOfAirplanes,
+    hitCell,
   };
   return (
     <GameContext.Provider value={positionProviderData}>

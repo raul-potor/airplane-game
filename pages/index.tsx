@@ -12,7 +12,7 @@ const Home: NextPage = () => {
     startGameSession();
   };
   return (
-    <Center h="100vh">
+    <Center h="100vh" px={2}>
       {gameStats ? (
         <Board size={boardSize} />
       ) : (

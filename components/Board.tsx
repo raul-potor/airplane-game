@@ -6,7 +6,21 @@ import { useGame } from "./GameProvider";
 
 const Board: FC<{ size: number }> = ({ size }) => {
   const [board, setBoard] = useState([]);
-  const { setAirplanePosition } = useGame();
+  const { setAirplanesPosition, numberOfAirplanes } = useGame();
+
+  const generateAirplanes = () => {
+    let airplanesPositions = [];
+    while (airplanesPositions.length < numberOfAirplanes) {
+      const airplanePos = `${generateRandomBetweenRange(
+        0,
+        size
+      )}-${generateRandomBetweenRange(0, size)}`;
+      if (!airplanesPositions.includes(airplanePos)) {
+        airplanesPositions.push(airplanePos);
+      }
+    }
+    return airplanesPositions;
+  };
 
   const drawBoard = (size) => {
     let cells = [];
@@ -18,12 +32,7 @@ const Board: FC<{ size: number }> = ({ size }) => {
       }
       cells.push(rowCells);
     }
-    setAirplanePosition(
-      `${generateRandomBetweenRange(0, size)}-${generateRandomBetweenRange(
-        0,
-        size
-      )}`
-    );
+    setAirplanesPosition(generateAirplanes());
     setBoard(cells);
   };
 
@@ -31,7 +40,14 @@ const Board: FC<{ size: number }> = ({ size }) => {
     drawBoard(size);
   }, []);
   return (
-    <Flex maxW={`calc(2.6125rem * ${size})`} flexWrap="wrap" gridGap={0.5}>
+    <Flex
+      maxW={{
+        base: `calc(2.125rem * ${size})`,
+        md: `calc(2.6125rem * ${size})`,
+      }}
+      flexWrap="wrap"
+      gridGap={0.5}
+    >
       {board}
     </Flex>
   );
